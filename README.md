@@ -1,3 +1,4 @@
+![RIPE MD160 Logo]
 # RIPE MD160 implementation in Go
 
 RIPEMD-160 is designed by Hans Dobbertin, [Antoon Bosselaers], and Bart Preneel with specifications available at [The RIPEMD-160 page].
@@ -8,7 +9,7 @@ You can compare this implementation with its [pseudocode].
 
 `go test` will successfully run the [standard test vectors] through the RIPEMD-160 algorithm.
 
-A very simple command-line interface can be found under the `cmd/` folder, loosely inspired by [IBM]'s own `rmd160` tool.
+A very simple [command-line interface] can be found under the `cmd/` folder, loosely inspired by [IBM]'s own `rmd160` tool (and similar to other commands such as `sha256sum`).
 
 ## Bibliography
 
@@ -21,12 +22,14 @@ As provided by [Antoon Bosselaers] on [The RIPEMD-160 page].
 5. A. Bosselaers, H. Dobbertin, B. Preneel, "The RIPEMD-160 cryptographic hash function," Dr. Dobb's Journal, Vol. 22, No. 1, January 1997, pp. 24-28.
 6. B. Preneel, A. Bosselaers, H. Dobbertin, "[The cryptographic hash function RIPEMD-160]," CryptoBytes, Vol. 3, No. 2, 1997, pp. 9-14.
 
+[RIPE MD160 Logo]: ./assets/rmd160-logo-small.png
 [Antoon Bosselaers]: https://homes.esat.kuleuven.be/~bosselae/
 [The RIPEMD-160 page]: https://homes.esat.kuleuven.be/~bosselae/ripemd160.html
 [Henrik Hautakoski]: https://github.com/pnx
 [antelope-go]: https://github.com/antelope-go/ripemd160
 [pseudocode]: pseudocode.md
 [standard test vectors]: test-vectors.md
+[command-line interface]: ./cmd/README.md
 [IBM]: https://www.ibm.com/docs/en/zos/3.1.0?topic=descriptions-rmd160-calculate-check-ripemd-160-cryptographic-hashes
 [RIPEMD-160, a strengthened version of RIPEMD]: https://homes.esat.kuleuven.be/~bosselae/ripemd160/pdf/AB-9601/AB-9601.pdf
 [ISO/IEC 10118-3:2018]: https://www.iso.org/standard/67116.html

@@ -1,3 +1,3 @@
 module github.com/antelope-go/ripemd160
 
-go 1.19
+go 1.24
