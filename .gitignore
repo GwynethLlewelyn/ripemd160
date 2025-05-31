@@ -1,0 +1,44 @@
+~*
+# Stupid macOS temporary files
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+Icon?
+
+# Thumbnails
+._*
+nohup.out
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Avoid storing on the Git repo the local environment of the Nova editor
+# (only exists for macOS)
+.nova
+.prettierrc.json
+
+# Never push .env to the Git repo!
+.env
+
+# executables
+ripemd
