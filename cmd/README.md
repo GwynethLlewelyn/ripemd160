@@ -5,4 +5,6 @@
 
 TBD.
 
+Compile with: `go build -ldflags "-X main.TheBuilder=[INSERT YOUR NAME HERE]" -o rmd160`"
+
 [RIPE MD160 Logo]: ../assets/rmd160-logo-small.png

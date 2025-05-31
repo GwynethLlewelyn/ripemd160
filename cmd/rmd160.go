@@ -4,6 +4,8 @@ package main
 
 import (
 	"github.com/antelope-go/ripemd160"
+	"github.com/urfave/cli/v2"
+
 )
 
 func main() {

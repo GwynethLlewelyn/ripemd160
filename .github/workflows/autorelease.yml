@@ -21,6 +21,10 @@ jobs:
         with:
           go-version: stable
       -
+        name: Compile CLI
+        working-directory: "./cmd"
+        run: go build -ldflags "-X main.TheBuilder=GitHub" -o rmd160
+      -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
