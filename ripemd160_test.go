@@ -62,7 +62,7 @@ func TestMillionA(t *testing.T) {
 }
 
 func BenchmarkMillionA(b *testing.B) {
-	for range b.N {
+	for b.Loop() {
 		millionA()
 	}
 }
