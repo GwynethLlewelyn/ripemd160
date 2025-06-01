@@ -54,33 +54,59 @@ func TestVectors(t *testing.T) {
 
 	vectors = append(vectors,
 		mdTest{
-			out: millionA.String(),
-			in:  "52783243c1697bdbe16d37f97f68f08325dc1528",
+			out: "52783243c1697bdbe16d37f97f68f08325dc1528",
+			in:  millionA.String(),
 		})
 	// run test
 	for i := range len(vectors) {
 		tv := vectors[i]
 
-		cmd := exec.Command(cmdFilename, "--quiet")
-		stdin, err := cmd.StdinPipe()
+		t.Logf("Vector %02d expected result: %s.\n", i, tv.out)
+
+		cmd := exec.Command(cmdFilename)
+
+		cmdIn, err := cmd.StdinPipe()
 		if err != nil {
+			t.Logf("connecting to STDIN aborted with %v\n", err)
+			t.Fatal(err)
+		}
+		cmdOut, err := cmd.StdoutPipe()
+		if err != nil {
+			t.Fatalf("connecting to STDOUT failed with: %v\n", err)
+		}
+		if err := cmd.Start(); err != nil {
+			t.Logf("failed executing %s, error was: %v\n", cmdFilename, err)
+			t.Fatal(err)
+		}
+		if n, err := cmdIn.Write([]byte(tv.in)); err != nil {
+			t.Logf("writing to cmd's STDIN failed with %v\n", err)
+			t.Fatal(err)
+		} else {
+			t.Logf("wrote %d bytes to STDIN\n", n)
+		}
+		if err := cmdIn.Close(); err != nil {
+			t.Logf("failed terminating %s, error was: %v\n", cmdFilename, err)
+			t.Fatal(err)
+		}
+		cmdBytes, err := io.ReadAll(cmdOut)
+		if err != nil {
+			t.Logf("did not read anything from STDOUT: %v\n", err)
+			t.Fatal(err)
+		}
+		if err := cmd.Wait(); err != nil {
+			t.Logf("waiting for command %q aborted with %v\n", cmdFilename, err)
 			t.Fatal(err)
 		}
 
-		go func() {
-			defer stdin.Close()
-			io.WriteString(stdin, tv.in)
-		}()
+		t.Logf("output received from command was: %q\n", cmdBytes)
 
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			t.Fatal(err)
-		}
-		cmdOut := padExactly(string(out), 40)
+		output := padExactly(string(cmdBytes), 40)
 
-		if cmdOut != tv.out {
+		if output != tv.out {
 			// trim tv.in to the first 100 chars, or else we'll blow up everything
-			t.Fatalf("RIPEMD-160(%100s) = %s, expected %s", tv.in, out, tv.out)
+			t.Fatalf("RIPEMD-160(%s) = %s, expected %s ❌", strings.TrimSpace(padExactly(tv.in, 100)), output, tv.out)
+		} else {
+			t.Logf("%s ✅\n", tv.out)
 		}
 	}
 }
