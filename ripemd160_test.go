@@ -6,6 +6,7 @@ package ripemd160
 import (
 	"fmt"
 	"io"
+	"strings"
 	"testing"
 )
 
@@ -46,6 +47,7 @@ func TestVectors(t *testing.T) {
 	}
 }
 
+// original version by pnx.
 func millionA() string {
 	md := New()
 	for range 100000 {
@@ -64,5 +66,31 @@ func TestMillionA(t *testing.T) {
 func BenchmarkMillionA(b *testing.B) {
 	for b.Loop() {
 		millionA()
+	}
+}
+
+// Alternative variant to compare with millionA().
+// It's supposed to be _way_ faster! (gwyneth 20260602)
+func millionAfast() string {
+	var millionA strings.Builder
+	millionA.Grow(1000000)
+	for range 1000000 {
+		millionA.WriteByte('a')
+	}
+	md := New()
+	io.WriteString(md, millionA.String())
+	return fmt.Sprintf("%x", md.Sum(nil))
+}
+
+func TestMillionAfast(t *testing.T) {
+	const out = "52783243c1697bdbe16d37f97f68f08325dc1528"
+	if s := millionAfast(); s != out {
+		t.Fatalf("RIPEMD-160 (1 million 'a') = %s, expected %s", s, out)
+	}
+}
+
+func BenchmarkMillionAfast(b *testing.B) {
+	for b.Loop() {
+		millionAfast()
 	}
 }
