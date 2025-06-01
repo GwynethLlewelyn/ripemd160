@@ -26,10 +26,10 @@ var vectors = [...]mdTest{
 }
 
 func TestVectors(t *testing.T) {
-	for i := 0; i < len(vectors); i++ {
+	for i := range len(vectors) {
 		tv := vectors[i]
 		md := New()
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			if j < 2 {
 				io.WriteString(md, tv.in)
 			} else {
@@ -48,7 +48,7 @@ func TestVectors(t *testing.T) {
 
 func millionA() string {
 	md := New()
-	for i := 0; i < 100000; i++ {
+	for range 100000 {
 		io.WriteString(md, "aaaaaaaaaa")
 	}
 	return fmt.Sprintf("%x", md.Sum(nil))
@@ -62,7 +62,7 @@ func TestMillionA(t *testing.T) {
 }
 
 func BenchmarkMillionA(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		millionA()
 	}
 }
