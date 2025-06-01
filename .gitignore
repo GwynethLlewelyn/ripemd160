@@ -41,4 +41,5 @@ Temporary Items
 .env
 
 # executables
-ripemd
+rmd160
+cmd/cmd
