@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"math/rand"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
+	"time"
 )
 
 type mdTest struct {
@@ -111,9 +113,120 @@ func TestVectors(t *testing.T) {
 	}
 }
 
+// Truncates (slices) or pads string (with spaces) so that its size is exactly `max` bytes.
+// Note: it's not Unicode-safe!
 func padExactly(s string, max int) string {
 	if len(s) < max {
 		return fmt.Sprintf("%-*s", max, s)
 	}
 	return s[:max]
+}
+
+func padExactlyUnicode(s string, max int) string {
+	res := make([]rune, max, max)
+	var pos, i int
+	// truncate
+	for pos, char := range s {
+		if pos < max {
+			res[pos] = char
+		}
+	}
+	// pad
+	for i = pos; i < max; i++ {
+		res[pos] = ' '
+	}
+	return string(res)
+}
+
+// Simple & fast random string generator by Timothy O. Margheim
+// See https://www.timothyomargheim.com/posts/go-tricks-benchmarks/
+type Generator struct {
+	r *rand.Rand // seed; if nil, a new one will be created on call.
+}
+
+const characterSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const characterSetUnicode = `シャロー判事、スレンダー判事、そしてヒュー・エヴァンス卿がやって来て、シャロー判事がジョン・フォルスタッフ卿に怒りをぶちまけている理由を議論している。エヴァンスは話題を若いアン・ペイジに移し、スレンダー判事と結婚させたいと思っていることにする。彼らはペイジ判事の玄関に到着し、シャローはフォルスタッフとその取り巻きたちと対峙する。二人は食事をするために部屋に入るが、スレンダー判事は外をうろつき、アン・ペイジが中に入るまで彼女と話をしようと試みるが、うまくいかない。フォルスタッフとその取り巻きたちはガーター・インに落ち着き、そこでファルスタッフはペイジ夫人とフォード夫人を誘惑する計画を明かす。二人は夫の財産を掌握しており、ファルスタッフはそれを狙っている。彼はピストルとニムに手紙を届けさせようとするが、二人は拒否する。二人はペイジとフォードにファルスタッフの計画を阻止しようと企む`
+
+// Returns a random string with up to `numChars` characters.
+func (g *Generator) String(numChars int, unicode bool) (string, error) {
+	if numChars <= 0 {
+		return "", fmt.Errorf("numChars must be greater than 0, received: %d", numChars)
+	}
+	if numChars > 1024 {
+		return "", fmt.Errorf("numChars must not be greater than 1024, received: %d", numChars)
+	}
+
+	if g.r == nil {
+		src := rand.NewSource(time.Now().UnixNano())
+		g.r = rand.New(src)
+	}
+	randomString := make([]byte, numChars)
+	for i := range randomString {
+		if !unicode {
+			randomString[i] = characterSet[g.r.Intn(len(characterSet))]
+		} else {
+			randomString[i] = characterSetUnicode[g.r.Intn(len(characterSet))]
+		}
+	}
+	return "anonymised_" + string(randomString), nil
+}
+
+// Benchmarking padExactly
+func BenchmarkPadExactly(b *testing.B) {
+	src := rand.NewSource(time.Now().UnixNano())
+	rnd := rand.New(src)
+
+	gen := &Generator{}
+
+	var (
+		testString string
+		testStrLen int
+		err        error // declared here to avoid scoping issues
+	)
+	for b.Loop() {
+		// get one random string; avoid empty strings and too trivial ones.
+		testStrLen = rnd.Intn(1000) + 3
+		testString, err = gen.String(testStrLen, false)
+		if err != nil {
+			b.Fatalf("random string generation failed: %s\n", err)
+		}
+		padTo := rnd.Intn(testStrLen) + 3
+		// now pad it to some value
+		// b.Logf("%s - padded string of size %d to %d characters\n",
+		// 	padExactly(testString, padTo),
+		// 	testStrLen,
+		// 	padTo,
+		// )
+		padExactly(testString, padTo)
+	}
+}
+
+// Benchmarking padExactly
+func BenchmarkPadExactlyUnicode(b *testing.B) {
+	src := rand.NewSource(time.Now().UnixNano())
+	rnd := rand.New(src)
+
+	gen := &Generator{}
+
+	var (
+		testString string
+		testStrLen int
+		err        error // declared here to avoid scoping issues
+	)
+	for b.Loop() {
+		// get one random string; avoid empty strings and too trivial ones.
+		testStrLen = rnd.Intn(1000) + 3
+		testString, err = gen.String(testStrLen, true)
+		if err != nil {
+			b.Fatalf("random string generation failed: %s\n", err)
+		}
+		padTo := rnd.Intn(testStrLen) + 3
+		// now pad it to some value
+		// b.Logf("%s - padded string of size %d to %d characters\n",
+		// 	padExactlyUnicode(testString, padTo),
+		// 	testStrLen,
+		// 	padTo,
+		// )
+		padExactlyUnicode(testString, padTo)
+	}
 }
