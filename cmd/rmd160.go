@@ -39,7 +39,7 @@ func main() {
 	app := &cli.Command{
 		Name:      "rmd160",
 		Usage:     "Prints RIPE MD-160 checksums.",
-		UsageText: os.Args[0] + " [OPTION]... [FILE]...\nWith no FILE, or when FILE is -, read standard input.",
+		UsageText: os.Args[0] + " [OPTION]... [FILE]...\nWith no FILE, or when FILE is -, read from standard input.",
 		Version: fmt.Sprintf(
 			"%s (rev %s)\n[%s %s %s]\n[build at %s by %s]",
 			versionInfo.version,
