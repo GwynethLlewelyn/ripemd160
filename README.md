@@ -22,6 +22,8 @@ As provided by [Antoon Bosselaers] on [The RIPEMD-160 page].
 5. A. Bosselaers, H. Dobbertin, B. Preneel, "The RIPEMD-160 cryptographic hash function," Dr. Dobb's Journal, Vol. 22, No. 1, January 1997, pp. 24-28.
 6. B. Preneel, A. Bosselaers, H. Dobbertin, "[The cryptographic hash function RIPEMD-160]," CryptoBytes, Vol. 3, No. 2, 1997, pp. 9-14.
 
+[![go-test](https://github.com/GwynethLlewelyn/ripemd160/actions/workflows/ci.yml/badge.svg)](https://github.com/GwynethLlewelyn/ripemd160/actions/workflows/ci.yml)
+
 [RIPE MD160 Logo]: ./assets/rmd160-logo-small.png
 [Antoon Bosselaers]: https://homes.esat.kuleuven.be/~bosselae/
 [The RIPEMD-160 page]: https://homes.esat.kuleuven.be/~bosselae/ripemd160.html
